@@ -1,0 +1,50 @@
+<div class="modal-panel block-config-modal cw-save-file-inspector" role="dialog" aria-modal="true" aria-labelledby="{{ node_id }}BlockModalTitle" data-generic-block-modal-root data-save-file-modal-root data-block-runtime-refresh="autonomous" data-node-id="{{ node_id }}" data-node-kind="{{ node_kind }}">
+  <div class="modal-header">
+    <div>
+      <span class="panel-kicker">Bloc {{ node_kind_title }}</span>
+      <h2 id="{{ node_id }}BlockModalTitle">{{ node_title }}</h2>
+    </div>
+    <div class="modal-actions">
+      <button class="ghost-btn" data-close-block-modal type="button">Fermer</button>
+    </div>
+  </div>
+  <div class="block-config-modal-body">
+    <section class="ports-editor-section">
+      <div class="ports-editor-header"><span class="group-label">Identité</span></div>
+      {{ title_field_html }}
+    </section>
+    <section class="ports-editor-section">
+      <div class="ports-editor-header"><span class="group-label">Fichier cible</span></div>
+      {{ path_browser_html }}
+      <div class="field-grid">
+        <label class="codex-policy-toggle save-file-toggle">
+          <input data-save-file-append type="checkbox" {{ checked }} />
+          <span>Ajouter à la fin</span>
+        </label>
+      </div>
+      <p class="inspector-copy">
+        Par défaut, le fichier est remplacé s'il existe. Les dossiers manquants sont
+        créés automatiquement. Un chemin relatif part du workspace; un chemin absolu est
+        utilisé tel quel.
+      </p>
+      <div class="inspector-actions">
+        <button class="solid-btn" data-save-file-apply type="button" disabled>Appliquer le fichier</button>
+      </div>
+    </section>
+    <section class="ports-editor-section">
+      <div class="ports-editor-header"><span class="group-label">Attributs techniques</span></div>
+      {{ config_fields_html }}
+    </section>
+    <section class="ports-editor-section">
+      <div class="ports-editor-header">
+        <span class="group-label">Ports</span>
+        <button class="ghost-btn add-port-btn {{ done_output_action_hidden }}" data-save-file-show-done-output type="button">+ Afficher Done</button>
+      </div>
+      {{ ports_html }}
+    </section>
+    <section class="ports-editor-section">
+      <div class="ports-editor-header"><span class="group-label">Dernier état</span></div>
+      {{ runtime_html }}
+    </section>
+  </div>
+</div>

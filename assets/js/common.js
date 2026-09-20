@@ -41,7 +41,7 @@ export function mountSaveFileEditor(root, api, { actionName = "inspector_update_
     }
   
 ).catch((error) => {
-      api.log?.(`[error] Mise à jour Save File impossible: ${error.message}`);
+      api.log?.(`[error] Save File update failed: ${error.message}`);
     });
   };
 
@@ -57,7 +57,7 @@ export function mountSaveFileEditor(root, api, { actionName = "inspector_update_
   applyButton?.addEventListener("click", apply);
   showDoneButton?.addEventListener("click", () => {
     void api.applyAction("save_file_show_done_output", {}).catch((error) => {
-      api.log?.(`[error] Ajout de la sortie Done impossible: ${error.message}`);
+      api.log?.(`[error] Adding the Done output failed: ${error.message}`);
     });
   });
 };

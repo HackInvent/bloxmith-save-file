@@ -214,7 +214,7 @@ class SaveFileBlock(BlockDefinition):
 
         return render_path_browser_control(
             input_id=input_id,
-            label="Chemin du fichier",
+            label="File path",
             value=str(config.get("path") or ""),
             placeholder="./exports/resultat.txt ou /home/toto/resultat.txt",
             input_attrs="data-save-file-path",
@@ -364,7 +364,7 @@ class SaveFileBlock(BlockDefinition):
             path = Path(folder).expanduser() / filename
 
         if not str(path).strip() or path.name in {"", ".", ".."}:
-            raise SaveFileBlockError("Le chemin cible doit designer un fichier.")
+            raise SaveFileBlockError("The target path must designate a file.")
 
         if path.is_absolute():
             return path.resolve()

@@ -48,28 +48,28 @@ def main() -> None:
         }
         rendered = surface_payload(server, model, node, "inspector_panel")
         html = str(rendered.get("html") or "")
-        expect("data-save-file-inspector-root" in html, "Le HTML inspecteur save_file doit venir du bloc.")
-        expect("data-save-file-path" in html, "Le panneau save_file doit contenir le champ chemin.")
-        expect("data-path-browser" in html, "Le panneau save_file doit utiliser le path browser commun.")
-        expect('value="exports/resultat.txt"' in html, "Le panneau save_file doit lire node.config.path en priorité.")
-        expect("data-save-file-append" in html, "Le panneau save_file doit contenir l'option append.")
-        expect("data-block-apply" in html, "Le panneau save_file doit exposer le bouton Appliquer.")
-        expect("data-save-file-show-done-output" in html, "Le panneau save_file doit proposer la sortie Done optionnelle.")
+        expect("data-save-file-inspector-root" in html, "The save_file inspector HTML must come from the block.")
+        expect("data-save-file-path" in html, "The save_file panel must contain the path field.")
+        expect("data-path-browser" in html, "The save_file panel must use the shared path browser.")
+        expect('value="exports/resultat.txt"' in html, "The save_file panel must read node.config.path first.")
+        expect("data-save-file-append" in html, "The save_file panel must contain the append option.")
+        expect("data-block-apply" in html, "The save_file panel must expose the Apply button.")
+        expect("data-save-file-show-done-output" in html, "The save_file panel must offer the optional Done output.")
         assets = rendered.get("assets") or []
 
         for asset_path in ("assets/css/inspector_panel.css", "assets/js/common.js", "assets/js/inspector_panel.js"):
             with urlopen(f"{server.base_url}/api/blocks/{key}/assets/{served(rendered, asset_path)}", timeout=5) as response:
                 body = response.read().decode("utf-8")
-            expect("save" in body.lower(), f"Asset inspecteur save_file non servi: {asset_path}")
+            expect("save" in body.lower(), f"save_file inspector asset not served: {asset_path}")
 
         modal = surface_payload(server, model, node, "modal")
         modal_html = str(modal.get("html") or "")
-        expect("data-save-file-modal-root" in modal_html, "Le modal save_file doit venir du bloc.")
-        expect("data-block-runtime-refresh=\"autonomous\"" in modal_html, "Le modal save_file doit gérer son refresh runtime.")
-        expect("data-save-file-path" in modal_html, "Le modal save_file doit contenir le champ chemin.")
-        expect("data-path-browser" in modal_html, "Le modal save_file doit utiliser le path browser commun.")
-        expect("data-save-file-apply" in modal_html, "Le modal save_file doit exposer l'action fichier.")
-        expect("exports/resultat.txt" in modal_html, "Le modal save_file doit lire node.config.path.")
+        expect("data-save-file-modal-root" in modal_html, "The save_file modal must come from the block.")
+        expect("data-block-runtime-refresh=\"autonomous\"" in modal_html, "The save_file modal must own its runtime refresh.")
+        expect("data-save-file-path" in modal_html, "The save_file modal must contain the path field.")
+        expect("data-path-browser" in modal_html, "The save_file modal must use the shared path browser.")
+        expect("data-save-file-apply" in modal_html, "The save_file modal must expose the file action.")
+        expect("exports/resultat.txt" in modal_html, "The save_file modal must read node.config.path.")
         modal_assets = modal.get("assets") or []
 
         target = server.root_dir / "exports" / "resultat.txt"
@@ -78,7 +78,7 @@ def main() -> None:
         browser = http_json(server.base_url, f"/api/blocks/save_file/browse-files?path={quote('exports/resultat.txt')}")
         expect(
             any(entry.get("name") == "resultat.txt" for entry in (browser.get("entries") or [])),
-            "Le navigateur fichier save_file doit etre servi par /api/blocks/save_file/browse-files.",
+            "The save_file file browser must be served by /api/blocks/save_file/browse-files.",
         )
 
         applied = http_json(
@@ -94,7 +94,7 @@ def main() -> None:
         expect(
             applied.get("node_patch", {}).get("config")
             == {"path": "exports/updated.txt", "append": False, "mode": "overwrite"},
-            "Patch save_file invalide.",
+            "Invalid save_file patch.",
         )
         expect(applied.get("rerender_inspector") is False, "Typing in save_file must not force a rerender.")
 
@@ -111,7 +111,7 @@ def main() -> None:
         expect(
             modal_applied.get("node_patch", {}).get("config")
             == {"path": "exports/modal.txt", "append": True, "mode": "append"},
-            "Patch modal save_file invalide.",
+            "Invalid save_file modal patch.",
         )
 
         done_result = http_json(
@@ -128,7 +128,7 @@ def main() -> None:
         expect(len(done_operations) == 1, "The Done action must return a graph operation.")
         expect(done_operations[0].get("op") == "create_port", "Done must materialize a port through create_port.")
         expect(done_operations[0].get("name") == "done", "The Done port must be named done.")
-        expect("control/trigger" in (done_operations[0].get("emits") or []), "Done doit emettre control/trigger.")
+        expect("control/trigger" in (done_operations[0].get("emits") or []), "Done must emit control/trigger.")
 
         converted = block_ui_result_to_graph_operations(
             node_id="save-file-1",

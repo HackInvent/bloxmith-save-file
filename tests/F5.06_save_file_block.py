@@ -7,11 +7,11 @@
 # Created Date: 2024-03-06
 # -----------------------------------------------------------------------------
 
-"""F5.06 - Bloc save_file en écriture contrôlée.
+"""F5.06 - save_file block under controlled writing.
 
-Le test lance `text -> save_file` dans un projet temporaire et vérifie que le
-fichier cible relatif au projet est créé avec le contenu exact attendu. Il
-vérifie aussi que l'input `path` écrase le chemin configuré.
+The test runs `text -> save_file` in a temporary project and checks that the
+project-relative target file is created with the exact expected content. It
+also checks that the `path` input overrides the configured path.
 """
 
 # Test cases:
@@ -288,9 +288,9 @@ def _verify_done_feedback_transport_loop(runtime_mode: str) -> None:
         created = create_run_api(server, document, runtime_mode=runtime_mode)
         run = wait_for_run_terminal(server, str(created.get("run_id") or ""), timeout_sec=30)
         logs = "\n".join(str(line) for line in run.get("logs", []))
-        expect(run.get("status") == "success", f"Le feedback save_file -> iterator {runtime_mode} doit transporter Done et boucler proprement.\n{logs}")
-        expect("feedback_iterations" not in run, "Le run ne doit plus exposer de compteur feedback.")
-        expect("python-error" not in logs, "La boucle feedback ne doit pas propager d'item vide.")
+        expect(run.get("status") == "success", f"Le feedback save_file -> iterator {runtime_mode} must carry Done and loop cleanly.\n{logs}")
+        expect("feedback_iterations" not in run, "The run must no longer expose a feedback counter.")
+        expect("python-error" not in logs, "The feedback loop must not propagate an empty item.")
         for index in range(1, 4):
             target = server.root_dir / "tmp_test_outputs" / "f5" / f"loop_{index}.txt"
             expect(target.is_file(), f"The feedback loop must create loop_{index}.txt.")

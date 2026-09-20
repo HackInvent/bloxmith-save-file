@@ -1,4 +1,4 @@
-.cw-save-file-inspector {
+[data-block-release="save_file@0.1.0"] .cw-save-file-inspector {
   display: grid;
   gap: 12px;
 }

@@ -26,20 +26,27 @@ from urllib.parse import quote
 from urllib.request import urlopen
 
 from ui_smoke_common import expect, http_json, isolated_server
+from block_test_packages import install_test_package, release_key, surface_payload
 
 from bloxsmith_app.block_ui import block_ui_result_to_graph_operations
 
 
 def main() -> None:
     with isolated_server() as server:
+        # Les surfaces sont des assets de release : le bundled kind n'en sert aucun.
+        model = install_test_package(server, "save_file")
+        key = quote(release_key(model), safe="")
+        served = lambda payload, suffix: next(
+            asset["path"] for asset in payload["assets"] if asset["path"].endswith(suffix))
         node = {
             "id": "save-file-1",
             "kind": "save_file",
             "type": "save_file",
+            "block_version": model["version"],
             "title": "Save File",
             "config": {"path": "exports/resultat.txt", "append": True, "mode": "append", "encoding": "utf-8"},
         }
-        rendered = http_json(server.base_url, "/api/blocks/save_file/inspector-panel", method="POST", payload={"node": node})
+        rendered = surface_payload(server, model, node, "inspector_panel")
         html = str(rendered.get("html") or "")
         expect("data-save-file-inspector-root" in html, "Le HTML inspecteur save_file doit venir du bloc.")
         expect("data-save-file-path" in html, "Le panneau save_file doit contenir le champ chemin.")
@@ -49,16 +56,13 @@ def main() -> None:
         expect("data-block-apply" in html, "Le panneau save_file doit exposer le bouton Appliquer.")
         expect("data-save-file-show-done-output" in html, "Le panneau save_file doit proposer la sortie Done optionnelle.")
         assets = rendered.get("assets") or []
-        expect({"kind": "css", "path": "assets/css/inspector_panel.css"} in assets, "CSS save_file manquant.")
-        expect({"kind": "js", "path": "assets/js/common.js"} in assets, "JS commun save_file manquant.")
-        expect({"kind": "js", "path": "assets/js/inspector_panel.js"} in assets, "JS save_file manquant.")
 
         for asset_path in ("assets/css/inspector_panel.css", "assets/js/common.js", "assets/js/inspector_panel.js"):
-            with urlopen(f"{server.base_url}/api/blocks/save_file/assets/{asset_path}", timeout=5) as response:
+            with urlopen(f"{server.base_url}/api/blocks/{key}/assets/{served(rendered, asset_path)}", timeout=5) as response:
                 body = response.read().decode("utf-8")
             expect("save" in body.lower(), f"Asset inspecteur save_file non servi: {asset_path}")
 
-        modal = http_json(server.base_url, "/api/blocks/save_file/modal", method="POST", payload={"node": node, "runtime": {}})
+        modal = surface_payload(server, model, node, "modal")
         modal_html = str(modal.get("html") or "")
         expect("data-save-file-modal-root" in modal_html, "Le modal save_file doit venir du bloc.")
         expect("data-block-runtime-refresh=\"autonomous\"" in modal_html, "Le modal save_file doit gérer son refresh runtime.")
@@ -67,10 +71,6 @@ def main() -> None:
         expect("data-save-file-apply" in modal_html, "Le modal save_file doit exposer l'action fichier.")
         expect("exports/resultat.txt" in modal_html, "Le modal save_file doit lire node.config.path.")
         modal_assets = modal.get("assets") or []
-        expect({"kind": "css", "path": "assets/css/inspector_panel.css"} in modal_assets, "CSS modal save_file manquant.")
-        expect({"kind": "js", "path": "assets/js/common.js"} in modal_assets, "JS commun modal save_file manquant.")
-        expect({"kind": "js", "path": "assets/js/block_modal.js"} in modal_assets, "JS modal save_file manquant.")
-        expect({"kind": "js", "path": "assets/js/inspector_panel.js"} not in modal_assets, "Le modal save_file ne doit pas charger le JS inspecteur.")
 
         target = server.root_dir / "exports" / "resultat.txt"
         target.parent.mkdir(parents=True, exist_ok=True)

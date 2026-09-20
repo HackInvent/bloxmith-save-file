@@ -1,7 +1,9 @@
 {
   "kind": "save_file",
   "version": "0.1.0",
-  "bloxsmith_compatibility": ["1.0.9"],
+  "bloxsmith_compatibility": [
+    "1.0.9"
+  ],
   "tested_with_bloxsmith": "1.0.9",
   "title": "Enregistrer",
   "ports": {
@@ -62,5 +64,35 @@
     "file_browser": true,
     "centralized_executor": "generic",
     "centralized_dependency_mode": "all_inputs"
+  },
+  "ui_assets": {
+    "modal": [
+      {
+        "kind": "css",
+        "path": "assets/css/inspector_panel.css"
+      },
+      {
+        "kind": "js",
+        "path": "assets/js/common.js"
+      },
+      {
+        "kind": "js",
+        "path": "assets/js/block_modal.js"
+      }
+    ],
+    "inspector_panel": [
+      {
+        "kind": "css",
+        "path": "assets/css/inspector_panel.css"
+      },
+      {
+        "kind": "js",
+        "path": "assets/js/common.js"
+      },
+      {
+        "kind": "js",
+        "path": "assets/js/inspector_panel.js"
+      }
+    ]
   }
 }

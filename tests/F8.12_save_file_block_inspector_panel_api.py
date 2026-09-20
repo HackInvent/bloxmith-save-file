@@ -7,12 +7,12 @@
 # Created Date: 2024-04-12
 # -----------------------------------------------------------------------------
 
-"""F8.12 - UI modulaire du panneau inspecteur Save File.
+"""F8.12 - Modular inspector panel of the Save File block.
 
-Le test démarre un serveur isolé, demande le rendu du panneau inspecteur
-`save_file` depuis `block.py`, vérifie les assets exposés, puis teste l'action
-structurée de mise à jour du chemin et du mode append. Aucune donnée utilisateur
-n'est modifiée hors du serveur de test.
+The test starts an isolated server, renders the `save_file` inspector panel from
+`block.py`, checks the assets it exposes, then exercises the structured update
+action for the path and the append mode. No user data is modified outside the
+test server.
 """
 
 # Test cases:
@@ -33,7 +33,7 @@ from bloxsmith_app.block_ui import block_ui_result_to_graph_operations
 
 def main() -> None:
     with isolated_server() as server:
-        # Les surfaces sont des assets de release : le bundled kind n'en sert aucun.
+        # Surfaces are release assets: a bundled kind serves none of them.
         model = install_test_package(server, "save_file")
         key = quote(release_key(model), safe="")
         served = lambda payload, suffix: next(
@@ -96,7 +96,7 @@ def main() -> None:
             == {"path": "exports/updated.txt", "append": False, "mode": "overwrite"},
             "Patch save_file invalide.",
         )
-        expect(applied.get("rerender_inspector") is False, "La saisie save_file ne doit pas forcer un rerender.")
+        expect(applied.get("rerender_inspector") is False, "Typing in save_file must not force a rerender.")
 
         modal_applied = http_json(
             server.base_url,
@@ -125,9 +125,9 @@ def main() -> None:
             },
         )
         done_operations = done_result.get("graph_operations") or []
-        expect(len(done_operations) == 1, "L'action Done doit retourner une operation graphe.")
-        expect(done_operations[0].get("op") == "create_port", "Done doit materialiser un port via create_port.")
-        expect(done_operations[0].get("name") == "done", "Le port Done doit avoir le nom done.")
+        expect(len(done_operations) == 1, "The Done action must return a graph operation.")
+        expect(done_operations[0].get("op") == "create_port", "Done must materialize a port through create_port.")
+        expect(done_operations[0].get("name") == "done", "The Done port must be named done.")
         expect("control/trigger" in (done_operations[0].get("emits") or []), "Done doit emettre control/trigger.")
 
         converted = block_ui_result_to_graph_operations(
@@ -136,7 +136,7 @@ def main() -> None:
             result=done_result,
             op_id_prefix="test_done",
         )
-        expect(converted[0].get("op_id") == "test_done:1", "Les graph_operations directes doivent recevoir un op_id.")
+        expect(converted[0].get("op_id") == "test_done:1", "Direct graph_operations must receive an op_id.")
     print("[ok] F8.12_save_file_block_inspector_panel_api")
 
 

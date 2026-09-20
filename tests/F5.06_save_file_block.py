@@ -182,8 +182,8 @@ def _verify_append_and_write_queue() -> None:
         first = block.execute(root_dir=root, config={"path": "exports/append.txt", "mode": "overwrite"}, content="first")
         second = block.execute(root_dir=root, config={"path": "exports/append.txt", "mode": "append", "project_title": "Proj", "block_path": "Save"}, content="second")
         text = target.read_text(encoding="utf-8")
-        expect(first.get("mode") == "overwrite" and second.get("mode") == "append", "SaveFile doit exposer le mode effectif.")
-        expect("first" in text and "second" in text and "Proj Save" in text, "Append doit conserver l'ancien contenu et ajouter l'en-tête.")
+        expect(first.get("mode") == "overwrite" and second.get("mode") == "append", "SaveFile must expose the effective mode.")
+        expect("first" in text and "second" in text and "Proj Save" in text, "Append must keep the previous content and add the header.")
 
         queue_target = root / "exports" / "queue.txt"
         def write_payload(index: int) -> dict:
@@ -196,8 +196,8 @@ def _verify_append_and_write_queue() -> None:
         with ThreadPoolExecutor(max_workers=3) as executor:
             results = list(executor.map(write_payload, range(3)))
         queued_text = queue_target.read_text(encoding="utf-8")
-        expect(all(result.get("status") == "success" for result in results), "Toutes les écritures concurrentes doivent réussir.")
-        expect(all(f"payload-{index}" in queued_text for index in range(3)), "La file d'écriture doit préserver tous les payloads.")
+        expect(all(result.get("status") == "success" for result in results), "Every concurrent write must succeed.")
+        expect(all(f"payload-{index}" in queued_text for index in range(3)), "The write queue must preserve every payload.")
 
 
 def _verify_runtime_path_override(runtime_mode: str) -> None:
@@ -220,18 +220,18 @@ def _verify_runtime_path_override(runtime_mode: str) -> None:
         )
         created = create_run_api(server, document, runtime_mode=runtime_mode)
         run = wait_for_run_terminal(server, str(created.get("run_id") or ""), timeout_sec=25)
-        expect(run.get("status") == "success", f"Le run save_file {runtime_mode} avec input path doit réussir.")
+        expect(run.get("status") == "success", f"The save_file {runtime_mode} run with a path input must succeed.")
         target = server.root_dir / override_path
         configured_target = server.root_dir / configured_path
-        expect(target.is_file(), "Le fichier cible fourni par l'input path n'a pas été créé.")
+        expect(target.is_file(), "The target file given by the path input was not created.")
         expect(
             target.read_text(encoding="utf-8") == f"contenu override {runtime_mode}",
-            "Le contenu sauvegardé doit venir uniquement de l'input contenu, pas de l'input path.",
+            "The saved content must come from the content input only, not from the path input.",
         )
-        expect(not configured_target.exists(), "Le chemin configuré ne doit pas être utilisé quand l'input path est fourni.")
+        expect(not configured_target.exists(), "The configured path must not be used when the path input is provided.")
         expect(
             any(result.get("saved_file") == override_path for result in (run.get("results") or {}).values()),
-            "Le résultat save_file doit référencer le chemin fourni par l'input path.",
+            "The save_file result must reference the path given by the path input.",
         )
 
 
@@ -254,12 +254,12 @@ def _verify_done_output(runtime_mode: str) -> None:
         )
         created = create_run_api(server, document, runtime_mode=runtime_mode)
         run = wait_for_run_terminal(server, str(created.get("run_id") or ""), timeout_sec=25)
-        expect(run.get("status") == "success", f"Le run save_file Done {runtime_mode} doit réussir.")
-        expect((server.root_dir / target_path).read_text(encoding="utf-8") == f"done content {runtime_mode}", "Le fichier doit être écrit avant Done.")
+        expect(run.get("status") == "success", f"The save_file Done {runtime_mode} run must succeed.")
+        expect((server.root_dir / target_path).read_text(encoding="utf-8") == f"done content {runtime_mode}", "The file must be written before Done.")
         done_output = output_value_by_content_type(run, "control/trigger")
-        expect(done_output.get("value") == "true", "La sortie Done doit émettre true.")
-        expect(done_output.get("content_type") == "control/trigger", "La sortie Done doit émettre control/trigger.")
-        expect("true" in worker_received_by_title(run, "Done display"), "Le subscriber doit recevoir Done.")
+        expect(done_output.get("value") == "true", "The Done output must emit true.")
+        expect(done_output.get("content_type") == "control/trigger", "The Done output must emit control/trigger.")
+        expect("true" in worker_received_by_title(run, "Done display"), "The subscriber must receive Done.")
 
 
 def _verify_done_feedback_transport_loop(runtime_mode: str) -> None:
@@ -293,11 +293,11 @@ def _verify_done_feedback_transport_loop(runtime_mode: str) -> None:
         expect("python-error" not in logs, "La boucle feedback ne doit pas propager d'item vide.")
         for index in range(1, 4):
             target = server.root_dir / "tmp_test_outputs" / "f5" / f"loop_{index}.txt"
-            expect(target.is_file(), f"La boucle feedback doit créer loop_{index}.txt.")
-            expect(target.read_text(encoding="utf-8") == f"content-{index}", f"SaveFile doit écrire le contenu frais {index}.")
+            expect(target.is_file(), f"The feedback loop must create loop_{index}.txt.")
+            expect(target.read_text(encoding="utf-8") == f"content-{index}", f"SaveFile must write the fresh content {index}.")
         expect(
             not (server.root_dir / "tmp_test_outputs" / "f5" / "stale_default_should_not_exist.txt").exists(),
-            "Le chemin par défaut ne doit pas être utilisé.",
+            "The default path must not be used.",
         )
 
 
@@ -313,25 +313,25 @@ def main() -> None:
         document = graph_payload(
             "F5 Save File",
             [
-                text_node("text-1", "Texte sauvegarde", "contenu sauvegardé F5", 80, 120),
+                text_node("text-1", "Texte sauvegarde", "saved content F5", 80, 120),
                 save_file_node(),
             ],
             [data_edge("edge-text-save", "text-1", 1, "save-file-1", 1)],
         )
         created = create_run_api(server, document)
         run = wait_for_run_terminal(server, str(created.get("run_id") or ""))
-        expect(run.get("status") == "success", "Le run save_file doit réussir.")
-        expect("success" in set((run.get("node_statuses") or {}).values()), "Le bloc save_file n'est pas success.")
+        expect(run.get("status") == "success", "The save_file run must succeed.")
+        expect("success" in set((run.get("node_statuses") or {}).values()), "The save_file block is not successful.")
 
         target = server.root_dir / "tmp_test_outputs" / "f5" / "save_file_result.txt"
-        expect(target.is_file(), "Le fichier cible save_file n'a pas été créé.")
-        expect(target.read_text(encoding="utf-8") == "contenu sauvegardé F5", "Le contenu du fichier sauvegardé est incorrect.")
+        expect(target.is_file(), "The save_file target file was not created.")
+        expect(target.read_text(encoding="utf-8") == "saved content F5", "The saved file content is wrong.")
         expect(
             any(
                 result.get("saved_file") == "tmp_test_outputs/f5/save_file_result.txt"
                 for result in (run.get("results") or {}).values()
             ),
-            "Le résultat save_file ne référence pas le fichier attendu.",
+            "The save_file result does not reference the expected file.",
         )
     print("[ok] F5.06_save_file_block")
 

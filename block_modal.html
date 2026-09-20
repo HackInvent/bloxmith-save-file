@@ -5,12 +5,12 @@
       <h2 id="{{ node_id }}BlockModalTitle">{{ node_title }}</h2>
     </div>
     <div class="modal-actions">
-      <button class="ghost-btn" data-close-block-modal type="button">Fermer</button>
+      <button class="ghost-btn" data-close-block-modal type="button">Close</button>
     </div>
   </div>
   <div class="block-config-modal-body">
     <section class="ports-editor-section">
-      <div class="ports-editor-header"><span class="group-label">Identité</span></div>
+      <div class="ports-editor-header"><span class="group-label">Identity</span></div>
       {{ title_field_html }}
     </section>
     <section class="ports-editor-section">
@@ -19,16 +19,16 @@
       <div class="field-grid">
         <label class="codex-policy-toggle save-file-toggle">
           <input data-save-file-append type="checkbox" {{ checked }} />
-          <span>Ajouter à la fin</span>
+          <span>Append to the end</span>
         </label>
       </div>
       <p class="inspector-copy">
-        Par défaut, le fichier est remplacé s'il existe. Les dossiers manquants sont
-        créés automatiquement. Un chemin relatif part du workspace; un chemin absolu est
-        utilisé tel quel.
+        By default the file is replaced when it exists. Missing folders are created
+        automatically. A relative path starts from the workspace; an absolute path is
+        used as is.
       </p>
       <div class="inspector-actions">
-        <button class="solid-btn" data-save-file-apply type="button" disabled>Appliquer le fichier</button>
+        <button class="solid-btn" data-save-file-apply type="button" disabled>Apply the file</button>
       </div>
     </section>
     <section class="ports-editor-section">
@@ -43,7 +43,7 @@
       {{ ports_html }}
     </section>
     <section class="ports-editor-section">
-      <div class="ports-editor-header"><span class="group-label">Dernier état</span></div>
+      <div class="ports-editor-header"><span class="group-label">Last state</span></div>
       {{ runtime_html }}
     </section>
   </div>

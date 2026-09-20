@@ -234,7 +234,7 @@ class SaveFileBlock(BlockDefinition):
             for key, value in config.items()
             if str(key) not in hidden_keys
         ]
-        return "\n".join(fields) if fields else '<div class="ports-editor-empty">Aucun attribut technique.</div>'
+        return "\n".join(fields) if fields else '<div class="ports-editor-empty">No technical attribute.</div>'
 
     def _show_done_output_action(self, node: dict[str, Any]) -> dict[str, Any]:
         """Return the graph operation that materializes the optional Done output port."""
@@ -242,7 +242,7 @@ class SaveFileBlock(BlockDefinition):
         if not node_id:
             return {"error": "missing_node_id"}
         if self._has_done_output(node):
-            return {"message": "[save-file] Sortie Done deja presente.", "rerender_inspector": False}
+            return {"message": "[save-file] Done output already present.", "rerender_inspector": False}
         port_id = self._next_output_port_id(node)
         return {
             "graph_operations": [
@@ -325,7 +325,7 @@ class SaveFileBlock(BlockDefinition):
                 file.write(output_content)
             stat = target_path.stat()
         except FileExistsError as exc:
-            raise SaveFileBlockError(f"Fichier deja existant: {target_path}") from exc
+            raise SaveFileBlockError(f"File already exists: {target_path}") from exc
         except PermissionError as exc:
             raise SaveFileBlockError(f"Permission refusee: {target_path}") from exc
         except OSError as exc:

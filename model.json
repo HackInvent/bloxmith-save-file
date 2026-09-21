@@ -5,7 +5,11 @@
     "1.0.9"
   ],
   "tested_with_bloxsmith": "1.0.9",
-  "title": "Enregistrer",
+  "title": "Save File",
+  "locales": {
+    "en": "locales/en.json",
+    "fr": "locales/fr.json"
+  },
   "ports": {
     "inputs": [
       {

@@ -1,0 +1,13 @@
+{
+  "block.save_file.model.title": "Save File",
+  "block.save_file.pill": "Save",
+  "block.save_file.target_section": "Target file",
+  "block.save_file.technical_section": "Technical attributes",
+  "block.save_file.append_label": "Append to the end",
+  "block.save_file.write_hint": "By default the file is replaced when it exists. Missing folders are created automatically inside the project.",
+  "block.save_file.apply_file": "Apply the file",
+  "block.save_file.show_done_output": "+ Show Done",
+  "block.save_file.mode_append": "append",
+  "block.save_file.mode_overwrite": "overwrite",
+  "block.save_file.error_write": "Write failed: {error}"
+}

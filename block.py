@@ -119,7 +119,13 @@ class SaveFileBlock(BlockDefinition):
             replacements={
                 "title": node.get("title") or self.default_title(),
                 "path": config.get("path") or "exports/resultat.txt",
-                "mode": "append" if config.get("append") else "overwrite",
+                # The card states one of two modes, so the marker carries the matching key.
+                "mode": self.translate(
+                    "block.save_file.mode_append" if config.get("append") else "block.save_file.mode_overwrite",
+                    fallback="append" if config.get("append") else "overwrite",
+                ),
+                "mode_key": ("block.save_file.mode_append" if config.get("append")
+                             else "block.save_file.mode_overwrite"),
             },
         )
 
@@ -257,7 +263,7 @@ class SaveFileBlock(BlockDefinition):
                     "multiplicity": "many",
                 }
             ],
-            "message": "[save-file] Sortie Done ajoutee.",
+            "message": "[save-file] Done output added.",
             "rerender_inspector": True,
         }
 
@@ -329,7 +335,8 @@ class SaveFileBlock(BlockDefinition):
         except PermissionError as exc:
             raise SaveFileBlockError(f"Permission refusee: {target_path}") from exc
         except OSError as exc:
-            raise SaveFileBlockError(f"Ecriture impossible: {exc}") from exc
+            raise SaveFileBlockError(self.translate("block.save_file.error_write", {"error": str(exc)},
+                fallback=f"Write failed: {exc}")) from exc
         finally:
             write_queue.leave()
             _discard_file_write_queue_if_idle(target_path, write_queue)
@@ -512,9 +519,9 @@ class SaveFileBlock(BlockDefinition):
         queued_before = int(metadata.get("queued_before") or 0)
         if queued_before:
             logs.append(
-                f"[save-queue] {context.node_id} a attendu {queued_before} ecriture(s) sur {metadata.get('path')}."
+                f"[save-queue] {context.node_id} waited for {queued_before} write(s) on {metadata.get('path')}."
             )
-        logs.append(f"[done] {context.node_id} fichier ecrit: {metadata.get('path')} ({metadata.get('bytes')} octets).")
+        logs.append(f"[done] {context.node_id} file written: {metadata.get('path')} ({metadata.get('bytes')} bytes).")
 
         return BlockRuntimeResult(
             status="success",

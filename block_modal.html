@@ -1,49 +1,49 @@
 <div class="modal-panel block-config-modal cw-save-file-inspector" role="dialog" aria-modal="true" aria-labelledby="{{ node_id }}BlockModalTitle" data-generic-block-modal-root data-save-file-modal-root data-block-runtime-refresh="autonomous" data-node-id="{{ node_id }}" data-node-kind="{{ node_kind }}">
   <div class="modal-header">
     <div>
-      <span class="panel-kicker">Bloc {{ node_kind_title }}</span>
+      <span class="panel-kicker"><span data-i18n="ui.block_kit.block">Block</span> {{ node_kind_title }}</span>
       <h2 id="{{ node_id }}BlockModalTitle">{{ node_title }}</h2>
     </div>
     <div class="modal-actions">
-      <button class="ghost-btn" data-close-block-modal type="button">Close</button>
+      <button class="ghost-btn" data-close-block-modal type="button" data-i18n="ui.block_kit.close">Close</button>
     </div>
   </div>
   <div class="block-config-modal-body">
     <section class="ports-editor-section">
-      <div class="ports-editor-header"><span class="group-label">Identity</span></div>
+      <div class="ports-editor-header"><span class="group-label" data-i18n="ui.block_kit.identity">Identity</span></div>
       {{ title_field_html }}
     </section>
     <section class="ports-editor-section">
-      <div class="ports-editor-header"><span class="group-label">Fichier cible</span></div>
+      <div class="ports-editor-header"><span class="group-label" data-i18n="block.save_file.target_section">Target file</span></div>
       {{ path_browser_html }}
       <div class="field-grid">
         <label class="codex-policy-toggle save-file-toggle">
           <input data-save-file-append type="checkbox" {{ checked }} />
-          <span>Append to the end</span>
+          <span data-i18n="block.save_file.append_label">Append to the end</span>
         </label>
       </div>
-      <p class="inspector-copy">
+      <p class="inspector-copy" data-i18n="block.save_file.write_hint">
         By default the file is replaced when it exists. Missing folders are created
         automatically. A relative path starts from the workspace; an absolute path is
         used as is.
       </p>
       <div class="inspector-actions">
-        <button class="solid-btn" data-save-file-apply type="button" disabled>Apply the file</button>
+        <button class="solid-btn" data-save-file-apply type="button" disabled data-i18n="block.save_file.apply_file">Apply the file</button>
       </div>
     </section>
     <section class="ports-editor-section">
-      <div class="ports-editor-header"><span class="group-label">Attributs techniques</span></div>
+      <div class="ports-editor-header"><span class="group-label" data-i18n="block.save_file.technical_section">Technical attributes</span></div>
       {{ config_fields_html }}
     </section>
     <section class="ports-editor-section">
       <div class="ports-editor-header">
-        <span class="group-label">Ports</span>
-        <button class="ghost-btn add-port-btn {{ done_output_action_hidden }}" data-save-file-show-done-output type="button">+ Afficher Done</button>
+        <span class="group-label" data-i18n="ui.block_kit.ports">Ports</span>
+        <button class="ghost-btn add-port-btn {{ done_output_action_hidden }}" data-save-file-show-done-output type="button" data-i18n="block.save_file.show_done_output">+ Show Done</button>
       </div>
       {{ ports_html }}
     </section>
     <section class="ports-editor-section">
-      <div class="ports-editor-header"><span class="group-label">Last state</span></div>
+      <div class="ports-editor-header"><span class="group-label" data-i18n="ui.block_kit.last_state">Last state</span></div>
       {{ runtime_html }}
     </section>
   </div>

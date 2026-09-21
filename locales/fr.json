@@ -1,0 +1,13 @@
+{
+  "block.save_file.model.title": "Enregistrer",
+  "block.save_file.pill": "Enregistrer",
+  "block.save_file.target_section": "Fichier cible",
+  "block.save_file.technical_section": "Attributs techniques",
+  "block.save_file.append_label": "Ajouter à la fin",
+  "block.save_file.write_hint": "Par défaut le fichier est remplacé s'il existe. Les dossiers manquants sont créés automatiquement dans le projet.",
+  "block.save_file.apply_file": "Appliquer le fichier",
+  "block.save_file.show_done_output": "+ Afficher Done",
+  "block.save_file.mode_append": "ajout",
+  "block.save_file.mode_overwrite": "remplacement",
+  "block.save_file.error_write": "Écriture impossible : {error}"
+}

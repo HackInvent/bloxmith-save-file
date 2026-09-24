@@ -35,12 +35,12 @@ export function mountSaveFileEditor(root, api, { actionName = "inspector_update_
     void api.applyAction(actionName, {
       path: pathInput?.value || "",
       append: Boolean(appendInput?.checked),
-    }).then    dirty = false;
-    if (applyButton) {
-      applyButton.disabled = true;
-    }
-  
-).catch((error) => {
+    }).then(() => {
+      dirty = false;
+      if (applyButton) {
+        applyButton.disabled = true;
+      }
+    }).catch((error) => {
       api.log?.(`[error] Save File update failed: ${error.message}`);
     });
   };

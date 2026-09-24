@@ -1,3 +1,5 @@
+import { withProperties } from "./properties.js";
+
 /**
  * Role: Mounts the save file block modal frontend.
  * File Name: block_modal.js
@@ -15,6 +17,11 @@ import { mountSaveFileEditor } from "./common.js";
  * @param {object} api - Generic block UI API exposing block actions.
  * @returns {void}
  */
-export function mount(root, api) {
+function mountOwned(root, api) {
   mountSaveFileEditor(root, api, { actionName: "modal_update_save_file" });
+}
+
+/** Keep the block behavior and add properties-only accessibility. */
+export function mount(root, ...args) {
+  return withProperties(mountOwned).call(this, root, ...args);
 }

@@ -10,9 +10,6 @@ Verified BloxSmith versions: **1.0.9** (bundled-block tests; see [test evidence]
 
 [![SAVE FILE — Writes incoming content to a configured or supplied file path.](media/thumbnail.webp)](media/cover.png)
 
-*Concept illustration. [Artwork and generation prompt](media/README.md).*
-
-
 ## Role
 
 `save_file` writes incoming content to a configured file path, or to the path supplied by its optional `path` input when connected.
